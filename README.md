@@ -62,17 +62,6 @@ Designed with an emphasis on speed, tactile minimalism, and zero cognitive clutt
 
 ---
 
-## Craftsmanship & Design Philosophy
-
-Scribadoo is built according to strict **anti-AI-slop** design principles:
-
-- **Monochrome Discipline**: Replaces noisy rainbow traffic lights with an intentional, high-contrast monochrome and neutral palette.
-- **Tactile Typography**: Paired with **Plus Jakarta Sans** for expressive headings and **Geist Sans** for crisp, legible tabular numbers and metrics.
-- **Spatial Rhythm**: Eliminates awkward card-in-card nesting, inconsistent padding, and dead empty spaces in favor of fluid 2-column layouts.
-- **Adaptive Theme**: Native dark and light mode support with smooth transitions and persistent system preferences.
-
----
-
 ## Technical Architecture
 
 ```
