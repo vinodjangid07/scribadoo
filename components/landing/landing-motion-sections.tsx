@@ -8,21 +8,21 @@ import { KineticTallyField } from "./kinetic-tally-field";
 
 const EDITORIAL_PILLARS = [
   {
-    title: "Attendance",
-    copy: "Every student starts marked present. Tap only the absentees and move straight into your lecture.",
+    title: "Daily attendance",
+    copy: "Everyone starts marked present. Just tap the students who are absent or late, add a quick note if needed, and save.",
   },
   {
-    title: "Fee ledgers",
-    copy: "Monthly entries appear automatically on the first with batch fees and sibling discounts already calculated.",
+    title: "Monthly fee ledger",
+    copy: "Monthly dues are calculated automatically from each student's batch fees and custom sibling discounts—no manual totaling.",
   },
   {
-    title: "Reminders",
-    copy: "Open WhatsApp with the student name, billing month, and exact balance already typed out for you.",
+    title: "WhatsApp reminders",
+    copy: "Send pre-filled fee reminders or absence updates directly on WhatsApp with the student's name, month, and exact balance.",
   },
 ];
 
 const MANIFESTO_TEXT =
-  "Every evening begins the same way. Students waiting while you call names from a torn notebook. Then the first of the month arrives with sibling discounts, half payments, and awkward reminder calls.";
+  "Teaching takes enough energy without spending your evenings flipping through paper registers, totaling half-paid fees by hand, or writing out reminder messages one parent at a time.";
 
 const MANIFESTO_WORDS = MANIFESTO_TEXT.split(" ");
 
@@ -30,46 +30,51 @@ const TEACHING_BEATS = [
   {
     numeral: "6:59",
     unit: "pm",
-    label: "Before the lecture begins",
-    title: "Mark attendance without breaking stride.",
-    body: "Every student in your batch starts marked present by default. When someone is away, tap their name once and save before picking up the board marker.",
+    label: "Start of class",
+    title: "Take attendance before picking up the marker.",
+    body: "Every student in the batch starts marked present. Tap only the absentees, save the roll call, and optionally notify absent students' parents on WhatsApp.",
   },
   {
     numeral: "01",
     unit: "st",
-    label: "First morning of the month",
-    title: "Fee cycles appear with sibling math done.",
-    body: "Scribadoo calculates each student's monthly fee across their enrolled batches, deducts custom sibling discounts, and separates pending balances from cleared ones.",
+    label: "Start of the month",
+    title: "Monthly fee bills are ready automatically.",
+    body: "Scribadoo calculates each student's monthly fee across their enrolled batches, applies any custom sibling or scholarship fee, and separates paid from pending dues.",
   },
   {
     numeral: "8:45",
     unit: "pm",
-    label: "After the last batch leaves",
-    title: "Polite parent notices without phone calls.",
-    body: "Instead of calling parents late at night, tap Remind next to any pending student. WhatsApp opens with their name, billing month, and exact balance ready to send.",
+    label: "After the last batch",
+    title: "Follow up on pending fees without phone calls.",
+    body: "Open your pending dues list and tap Remind. WhatsApp opens with a polite, pre-written message containing the student's name, billing month, and exact balance due.",
   },
 ];
 
 const INDEX_ROWS = [
   {
     task: "Daily attendance",
-    paper: "Calling every name aloud from a paper register",
-    scribadoo: "Marking only absent students in a few taps",
+    paper: "Calling out every name from a notebook",
+    scribadoo: "Tap only absent or late students and save",
   },
   {
-    task: "Monthly fee tally",
-    paper: "Manual sums and sibling math on the first",
-    scribadoo: "Generated automatically for active enrollments",
+    task: "Monthly fee totals",
+    paper: "Calculating batch fees and sibling discounts by hand",
+    scribadoo: "Auto-calculated on the 1st for active students",
   },
   {
-    task: "Pending follow ups",
-    paper: "Awkward reminders at the door or phone calls",
-    scribadoo: "One tap opens a pre-written WhatsApp draft",
+    task: "Partial & pending dues",
+    paper: "Flipping back through pages to check who paid half",
+    scribadoo: "Instant ledger showing paid, partial, and overdue",
+  },
+  {
+    task: "Parent follow-ups",
+    paper: "Awkward phone calls or typing texts manually",
+    scribadoo: "One-tap WhatsApp draft with exact balance",
   },
   {
     task: "Payment receipts",
-    paper: "Handwritten slips that get lost in bags",
-    scribadoo: "Numbered digital receipt ready to share",
+    paper: "Handwritten slips that easily get lost",
+    scribadoo: "Numbered digital receipt ready to share anytime",
   },
 ];
 
@@ -200,19 +205,19 @@ export function LandingMotionSections({
               style={{ fontSize: "clamp(2.85rem, 6.8vw, 6.25rem)" }}
             >
               <span className="block overflow-hidden pb-1.5">
-                <span className="block hero-mask-line">One calm register</span>
+                <span className="block hero-mask-line">Manage batches,</span>
               </span>
               <span className="block overflow-hidden pb-1.5">
-                <span className="block hero-mask-line">for every batch</span>
+                <span className="block hero-mask-line">attendance, and</span>
               </span>
               <span className="block overflow-hidden pb-1.5 text-[#52525B] dark:text-[#A3A3A3]">
-                <span className="block hero-mask-line">you teach.</span>
+                <span className="block hero-mask-line">monthly fees.</span>
               </span>
             </h1>
 
             <div className="hero-fade-in flex flex-col gap-6 pt-2">
               <p className="text-[#52525B] dark:text-[#A3A3A3] text-base sm:text-lg leading-relaxed max-w-2xl">
-                Attendance, monthly fee ledgers, and parent reminders built for independent tuition teachers and coaching classes. Whether you run one evening batch or ten, everything stays clear in one place.
+                A digital register built for tuition teachers and coaching classes. Mark daily roll call in a few taps, track monthly fee payments automatically, and send polite WhatsApp reminders to parents.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -228,10 +233,10 @@ export function LandingMotionSections({
                 ) : (
                   <>
                     <PointerFillLink href="/login" variant="primary">
-                      Create teacher workspace
+                      Get started free
                     </PointerFillLink>
                     <PointerFillLink href="/login" variant="secondary">
-                      Sign in to Scribadoo
+                      Sign in
                     </PointerFillLink>
                   </>
                 )}
@@ -239,7 +244,7 @@ export function LandingMotionSections({
             </div>
           </div>
 
-          <div className="lg:col-span-5 hero-fade-in">
+          <div className="hidden lg:block lg:col-span-5 hero-fade-in">
             <KineticTallyField />
           </div>
         </div>
@@ -280,9 +285,9 @@ export function LandingMotionSections({
         >
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between text-sm text-[#52525B] dark:text-[#A3A3A3]">
-              <span>How a teaching day runs</span>
+              <span>A normal teaching day with Scribadoo</span>
               <span className="font-mono font-medium text-[#18181B] dark:text-[#EDEDED]">
-                Beat {activeBeat + 1} of {TEACHING_BEATS.length}
+                Step {activeBeat + 1} of {TEACHING_BEATS.length}
               </span>
             </div>
             <div className="w-full h-px bg-black/[0.08] dark:bg-white/[0.1] relative overflow-hidden">
@@ -349,10 +354,10 @@ export function LandingMotionSections({
         <div className="lg:hidden flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <h2 className="font-heading text-2xl sm:text-3xl font-bold text-[#18181B] dark:text-[#EDEDED] tracking-tight">
-              How a teaching day runs.
+              A normal teaching day with Scribadoo.
             </h2>
             <p className="text-base text-[#52525B] dark:text-[#A3A3A3]">
-              Three moments from your daily register.
+              Three daily tasks handled in one place.
             </p>
           </div>
 
@@ -385,10 +390,10 @@ export function LandingMotionSections({
       <section className="py-12 sm:py-16 flex flex-col gap-8">
         <div className="flex flex-col gap-2 max-w-2xl">
           <h2 className="font-heading text-2xl sm:text-4xl text-[#18181B] dark:text-[#EDEDED] font-bold tracking-tight">
-            Built around the reality of your day.
+            Why teachers switch from paper registers.
           </h2>
           <p className="text-[#52525B] dark:text-[#A3A3A3] text-base leading-relaxed">
-            Every workflow replaces a slow step from paper notebook management with a direct digital equivalent.
+            Every feature replaces a slow, error-prone paper habit with a fast digital workflow.
           </p>
         </div>
 
@@ -454,10 +459,10 @@ export function LandingMotionSections({
             className="font-heading font-extrabold text-[#18181B] dark:text-[#EDEDED] tracking-[-0.03em] leading-[1.04]"
             style={{ fontSize: "clamp(2.25rem, 5vw, 4.5rem)" }}
           >
-            Close the notebook.
+            Ready to organize your classes?
           </h2>
           <p className="text-[#52525B] dark:text-[#A3A3A3] text-base sm:text-lg leading-relaxed">
-            Set up your first batch in minutes and enroll your students.
+            Create your free teacher account, add your first batch, and manage attendance and fees in one place.
           </p>
         </div>
 
@@ -468,7 +473,7 @@ export function LandingMotionSections({
             </PointerFillLink>
           ) : (
             <PointerFillLink href="/login" variant="primary">
-              Create teacher workspace
+              Get started free
             </PointerFillLink>
           )}
         </div>

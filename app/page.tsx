@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { SmoothScrollProvider } from "@/components/landing/smooth-scroll-provider";
 import { LandingMotionSections } from "@/components/landing/landing-motion-sections";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { SiteFooter } from "@/components/shared/site-footer";
 
 export const instant = false;
 
@@ -30,8 +31,28 @@ export default async function HomePage() {
         .slice(0, 2)
     : "TT";
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Scribadoo",
+    applicationCategory: "EducationalApplication",
+    operatingSystem: "Web",
+    url: "https://scribadoo.vinodjangid.site",
+    description:
+      "Digital attendance register, monthly fee ledger, digital receipt generator, and WhatsApp reminder tool built for tuition teachers and coaching classes.",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "INR",
+    },
+  };
+
   return (
     <SmoothScrollProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <div className="min-h-screen flex flex-col bg-[#FBFBF9] dark:bg-[#121212] text-[#18181B] dark:text-[#EDEDED] selection:bg-black/10 dark:selection:bg-white/10 transition-colors duration-150">
         {/* Navigation */}
         <header className="w-full sticky top-0 z-40 bg-[#FBFBF9] dark:bg-[#121212] border-b border-black/[0.06] dark:border-white/[0.08]">
@@ -66,24 +87,24 @@ export default async function HomePage() {
                 <>
                   <Link
                     href="/dashboard"
-                    className="h-9 pl-1 pr-3 rounded-xl bg-[#F4F4F0] dark:bg-[#1C1C1C] hover:bg-[#EDEDEA] dark:hover:bg-[#262626] border border-black/[0.08] dark:border-white/[0.12] flex items-center gap-2 shrink-0 transition-colors cursor-pointer"
-                    title="Go to command center"
+                    className="w-9 h-9 sm:w-auto p-0 sm:pl-1 sm:pr-3 rounded-xl bg-[#F4F4F0] dark:bg-[#1C1C1C] hover:bg-[#EDEDEA] dark:hover:bg-[#262626] border border-black/[0.08] dark:border-white/[0.12] flex items-center justify-center sm:justify-start gap-2 shrink-0 transition-colors cursor-pointer"
+                    title={`Dashboard (${teacherName})`}
                   >
-                    <div className="w-7 h-7 rounded-lg bg-[#18181B] dark:bg-[#EDEDED] text-[#FBFBF9] dark:text-[#121212] flex items-center justify-center text-sm font-bold shrink-0">
+                    <div className="w-7 h-7 rounded-lg bg-[#18181B] dark:bg-[#EDEDED] text-[#FBFBF9] dark:text-[#121212] flex items-center justify-center text-xs font-bold shrink-0">
                       {initials}
                     </div>
-                    <span className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED] max-w-[120px] sm:max-w-[160px] truncate">
+                    <span className="hidden sm:inline text-sm font-semibold text-[#18181B] dark:text-[#EDEDED] sm:max-w-[160px] truncate">
                       {teacherName}
                     </span>
                   </Link>
 
                   <Link
                     href="/dashboard"
-                    className="h-9 flex items-center bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-[#FAFAFA] text-[#FBFBF9] dark:text-[#121212] text-sm font-semibold px-3.5 sm:px-4 rounded-xl transition-colors"
+                    className="hidden sm:flex h-9 items-center bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-[#FAFAFA] text-[#FBFBF9] dark:text-[#121212] text-sm font-semibold px-3.5 sm:px-4 rounded-xl transition-colors"
                   >
                     <span className="roll">
-                      <span>Open dashboard</span>
-                      <span aria-hidden="true">Open dashboard</span>
+                      <span>Dashboard</span>
+                      <span aria-hidden="true">Dashboard</span>
                     </span>
                   </Link>
                 </>
@@ -103,8 +124,8 @@ export default async function HomePage() {
                     className="h-9 flex items-center bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-[#FAFAFA] text-[#FBFBF9] dark:text-[#121212] text-sm font-semibold px-3.5 sm:px-4 rounded-xl transition-colors"
                   >
                     <span className="roll">
-                      <span>Create teacher account</span>
-                      <span aria-hidden="true">Create teacher account</span>
+                      <span>Get started free</span>
+                      <span aria-hidden="true">Get started free</span>
                     </span>
                   </Link>
                 </>
@@ -119,28 +140,7 @@ export default async function HomePage() {
         </main>
 
         {/* Footer */}
-        <footer className="w-full bg-[#F4F4F0] dark:bg-[#1C1C1C] mt-16 py-10 px-6 sm:px-10 lg:px-14 xl:px-16 border-t border-black/[0.06] dark:border-white/[0.08] text-sm text-[#52525B] dark:text-[#A3A3A3]">
-          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center">
-              <Image
-                src="/dark-logo.webp"
-                alt="Scribadoo"
-                width={105}
-                height={22}
-                className="block dark:hidden h-5 w-auto object-contain opacity-85"
-              />
-              <Image
-                src="/light-logo.webp"
-                alt="Scribadoo"
-                width={105}
-                height={22}
-                className="hidden dark:block h-5 w-auto object-contain opacity-85"
-              />
-            </div>
-            <span className="text-sm">A faster register for tuition teachers.</span>
-            <span className="text-sm">&copy; {new Date().getFullYear()} Scribadoo</span>
-          </div>
-        </footer>
+        <SiteFooter />
       </div>
     </SmoothScrollProvider>
   );

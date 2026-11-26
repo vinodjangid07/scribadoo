@@ -116,7 +116,7 @@ export function KineticTallyField() {
           setTallied((prev) => !prev);
         }
       }}
-      className="w-full h-full min-h-[240px] sm:min-h-[280px] p-4 sm:p-6 flex flex-col justify-between gap-6 cursor-pointer select-none"
+      className="w-full h-full min-h-[240px] sm:min-h-[280px] p-4 sm:p-6 flex flex-col justify-center cursor-pointer select-none"
     >
       <div className="grid grid-cols-7 gap-3 sm:gap-4 flex-1 items-center justify-items-center py-2">
         {Array.from({ length: TOTAL }).map((_, i) => {
@@ -136,13 +136,6 @@ export function KineticTallyField() {
             />
           );
         })}
-      </div>
-
-      <div className="flex items-center justify-between text-sm text-[#52525B] dark:text-[#A3A3A3]">
-        <span>{tallied ? "Tally ruled" : "Tap to rule tally"}</span>
-        <span className="font-mono font-medium text-[#18181B] dark:text-[#EDEDED]">
-          {tallied ? "28 / 28" : "Active register"}
-        </span>
       </div>
     </div>
   );

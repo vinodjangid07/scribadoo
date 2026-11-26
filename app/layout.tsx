@@ -19,8 +19,62 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Scribadoo - Tuition Attendance & Fee Management",
-  description: "Simple, fast attendance and fee management for tuition teachers",
+  metadataBase: new URL("https://scribadoo.vinodjangid.site"),
+  title: {
+    default: "Scribadoo — Tuition Attendance & Fee Management",
+    template: "%s | Scribadoo",
+  },
+  description:
+    "Manage tuition batches, mark daily attendance in seconds, track monthly fee ledgers, issue digital receipts, and send WhatsApp reminders to parents.",
+  applicationName: "Scribadoo",
+  keywords: [
+    "tuition management app",
+    "coaching class management software",
+    "digital attendance register",
+    "tuition fee tracker",
+    "WhatsApp fee reminder",
+    "student batch management",
+    "Scribadoo",
+  ],
+  authors: [{ name: "Scribadoo" }],
+  creator: "Scribadoo",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://scribadoo.vinodjangid.site",
+    siteName: "Scribadoo",
+    title: "Scribadoo — Attendance & Fee Management for Tuition Teachers",
+    description:
+      "Replace paper registers with Scribadoo. Manage student batches, take fast daily attendance, track monthly fees, and send WhatsApp reminders to parents.",
+    images: [
+      {
+        url: "/og-image.webp",
+        width: 1200,
+        height: 630,
+        alt: "Scribadoo — Tuition Attendance & Fee Management",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Scribadoo — Attendance & Fee Management for Tuition Teachers",
+    description:
+      "Manage tuition batches, daily attendance, monthly fee ledgers, and WhatsApp parent reminders in one clean register.",
+    images: ["/og-image.webp"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: "/dark-app-icon.webp",
     apple: "/dark-app-icon.webp",
