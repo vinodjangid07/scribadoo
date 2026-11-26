@@ -2,6 +2,18 @@
 
 # dependencies
 /node_modules
+# local reviews, specs, design assets & scratch docs
+/inspo-designs
+/anti-ai-slop.md
+/phase.md
+/DESIGN.md
+CODE_REVIEW_AND_FIXES.md
+*code_review*
+*review*.md
+*notes*.md
+scratch/
+scripts/scratch/
+*.scratch.*
 /.pnp
 .pnp.*
 .yarn/*

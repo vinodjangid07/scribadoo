@@ -1,26 +1,158 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Mode (Anti-AI-Slop Softened Canvas) */
+  --page-bg: #FBFBF9;
+  --surface-bg: #FFFFFF;
+  --surface-subtle: #F4F4F0;
+  --surface-active: #EAEAE6;
+
+  /* Refined Apple-Style Hairline Borders */
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-focus: #18181B;
+
+  /* Obsidian Slate Typography & Accents */
+  --text-primary: #18181B;
+  --text-muted: #71717A;
+  --text-subtle: #A1A1AA;
+
+  --primary: #18181B;
+  --primary-hover: #27272A;
+  --primary-text: #FAFAFA;
+}
+
+.dark,
+[data-theme="dark"],
+:root[class~="dark"],
+html.dark {
+  /* Dark Mode (Anti-AI-Slop Section 1.5: Deep Charcoal, Softened surfaces, no neon glow) */
+  --page-bg: #121212;
+  --surface-bg: #1C1C1C;
+  --surface-subtle: #262626;
+  --surface-active: #323232;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: #EDEDED;
+
+  --text-primary: #EDEDED;
+  --text-muted: #A1A1AA;
+  --text-subtle: #71717A;
+
+  --primary: #EDEDED;
+  --primary-hover: #FFFFFF;
+  --primary-text: #121212;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-page: var(--page-bg);
+  --color-surface: var(--surface-bg);
+  --color-subtle: var(--surface-subtle);
+  --color-surface-active: var(--surface-active);
+
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-subtle);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-text: var(--primary-text);
+
+  --font-heading: var(--font-plus-jakarta);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: initial;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--page-bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  letter-spacing: -0.011em;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Hard guarantees for body canvas matching theme selector */
+html.dark body {
+  background-color: #121212;
+  color: #EDEDED;
+}
+html:not(.dark) body {
+  background-color: #FBFBF9;
+  color: #18181B;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-heading), sans-serif;
+  letter-spacing: -0.025em;
+}
+
+/* Accessible focus indicator for keyboard only */
+:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Awwwards Motion: Letter Roll (nav & secondary links) */
+.roll {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  overflow: hidden;
+  line-height: 1.25;
+}
+.roll > span {
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.roll > span + span {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+@media (hover: hover) {
+  a:hover .roll > span,
+  button:hover .roll > span {
+    transform: translateY(-100%);
+  }
+}
+a:focus-visible .roll > span,
+button:focus-visible .roll > span {
+  transform: translateY(-100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .roll > span {
+    transition: none;
+    transform: none !important;
+  }
+  .roll > span + span {
+    display: none;
+  }
+}
+
+/* Awwwards Motion: Pointer-entry circular fill button */
+.btn-fill {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.btn-fill__ink {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  clip-path: circle(0% at 50% 50%);
+  pointer-events: none;
+}
+.btn-fill:active {
+  transform: scale(0.985);
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-fill__ink {
+    display: none;
+  }
 }
