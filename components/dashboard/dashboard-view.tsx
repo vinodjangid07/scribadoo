@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -58,12 +58,26 @@ export function DashboardView({ initialData }: DashboardViewProps) {
     todayBatches,
     allBatchesList,
     actionQueue,
-    todayCollections,
     financials,
     overdueStudents,
+    attendanceAnalytics,
   } = initialData;
 
   const todayBatchIds = todayBatches.map((b) => b.id);
+
+  // Executive overview metrics
+  const overviewStats = useMemo(() => {
+    const recordedToday = todayBatches.filter((b) => b.isRecordedToday).length;
+    const totalPresentToday = todayBatches.reduce(
+      (sum, b) => sum + (b.attendanceStats?.present || 0),
+      0
+    );
+    return {
+      recordedToday,
+      totalToday: todayBatches.length,
+      totalPresentToday,
+    };
+  }, [todayBatches]);
 
   const handleMarkAllPresent = async (batchId: string) => {
     const res = await markBatchAllPresentToday(batchId);
@@ -131,6 +145,65 @@ export function DashboardView({ initialData }: DashboardViewProps) {
         onOpenQuickCollect={() => setIsQuickCollectOpen(true)}
       />
 
+      {/* Unified hairline KPI overview strip */}
+      <section className="bg-[#FFFFFF] dark:bg-[#191919] border border-black/[0.07] dark:border-white/[0.08] rounded-2xl grid grid-cols-2 lg:grid-cols-4 overflow-hidden">
+        <div className="px-5 py-4 border-r border-b lg:border-b-0 border-black/[0.06] dark:border-white/[0.07]">
+          <div className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
+            Collected
+          </div>
+          <div className="font-heading text-2xl font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED] mt-1 tabular-nums">
+            ₹{financials.totalCollected.toLocaleString("en-IN")}
+          </div>
+          <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5 tabular-nums">
+            {financials.paidStudentsCount} of {financials.totalStudents} cleared
+          </div>
+        </div>
+
+        <div className="px-5 py-4 border-b lg:border-b-0 lg:border-r border-black/[0.06] dark:border-white/[0.07]">
+          <div className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
+            Pending Dues
+          </div>
+          <div className="font-heading text-2xl font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED] mt-1 tabular-nums">
+            ₹{financials.totalPending.toLocaleString("en-IN")}
+          </div>
+          <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5 tabular-nums">
+            {financials.pendingStudentsCount} students pending
+          </div>
+        </div>
+
+        <div className="px-5 py-4 border-r border-black/[0.06] dark:border-white/[0.07]">
+          <div className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
+            Overall Attendance
+          </div>
+          <div className="font-heading text-2xl font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED] mt-1 tabular-nums">
+            {attendanceAnalytics.totalSessions > 0
+              ? `${attendanceAnalytics.overallRate}%`
+              : "—"}
+          </div>
+          <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5 tabular-nums">
+            {attendanceAnalytics.totalSessions}{" "}
+            {attendanceAnalytics.totalSessions === 1 ? "session" : "sessions"} logged
+          </div>
+        </div>
+
+        <div className="px-5 py-4">
+          <div className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
+            Today&apos;s Roll Call
+          </div>
+          <div className="font-heading text-2xl font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED] mt-1 tabular-nums">
+            {overviewStats.totalToday === 0
+              ? "No classes"
+              : overviewStats.recordedToday === overviewStats.totalToday
+              ? `${overviewStats.totalPresentToday} Present`
+              : `${overviewStats.recordedToday}/${overviewStats.totalToday} Marked`}
+          </div>
+          <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5 tabular-nums">
+            {overviewStats.totalToday}{" "}
+            {overviewStats.totalToday === 1 ? "batch" : "batches"} scheduled
+          </div>
+        </div>
+      </section>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Operations column: schedule, alerts, and analytics */}
         <div className="lg:col-span-7 space-y-6">
@@ -152,12 +225,12 @@ export function DashboardView({ initialData }: DashboardViewProps) {
           />
 
           <AttendanceAnalyticsCard
-            points={initialData.attendanceAnalytics?.points || []}
+            points={attendanceAnalytics?.points || []}
             allBatches={allBatchesList}
           />
         </div>
 
-        {/* Financial column: monthly collections and overdue dues */}
+        {/* Financial column: monthly collections and pending dues ledger */}
         <div className="lg:col-span-5 space-y-6">
           <MonthlyCollectionCard
             month={financials.month}
@@ -170,79 +243,77 @@ export function DashboardView({ initialData }: DashboardViewProps) {
             pendingStudentsCount={financials.pendingStudentsCount}
           />
 
-          <div className="bg-[#FFFFFF] dark:bg-[#1C1C1C] border border-black/[0.06] dark:border-white/[0.08] rounded-2xl p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
+          <section className="bg-[#FFFFFF] dark:bg-[#191919] border border-black/[0.07] dark:border-white/[0.08] rounded-2xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-black/[0.06] dark:border-white/[0.07] flex items-center justify-between gap-3">
+              <div className="flex items-baseline gap-2.5">
                 <h2 className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED]">
                   Pending Fee Collections
                 </h2>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-[#F4F4F0] dark:bg-[#262626] text-[#71717A] dark:text-[#A1A1AA] font-mono">
+                <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] tabular-nums">
                   {overdueStudents.length}
                 </span>
               </div>
 
               <Link
                 href="/fees"
-                className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] flex items-center gap-1 transition-colors"
+                className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] inline-flex items-center gap-1 transition-colors group"
               >
                 <span>View all</span>
-                <ArrowRight className="w-3 h-3" />
+                <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
 
             {overdueStudents.length === 0 ? (
-              <div className="py-8 text-center border border-dashed border-black/[0.08] dark:border-white/[0.12] rounded-xl">
-                <p className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
+              <div className="px-5 py-10 text-center">
+                <p className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
                   All enrolled students are cleared for {financials.month}.
                 </p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-[420px] overflow-y-auto pr-0.5 sm:pr-1">
+              <div className="divide-y divide-black/[0.05] dark:divide-white/[0.06] max-h-[504px] overflow-y-auto">
                 {overdueStudents.map((student) => (
                   <div
                     key={student.studentId}
-                    className="p-2.5 sm:p-3 rounded-xl bg-[#FAFAF9] dark:bg-[#181818] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] border border-black/[0.04] dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3 transition-colors"
+                    className="px-5 py-3 hover:bg-[#F9F9F7] dark:hover:bg-white/[0.025] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 sm:gap-3 transition-colors group"
                   >
-                    <div className="flex items-center justify-between sm:justify-start gap-2.5 min-w-0">
-                      <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="flex items-center justify-between sm:justify-start gap-3 min-w-0">
+                      <div className="flex items-center gap-3 min-w-0">
                         <StudentAvatar name={student.studentName} size="sm" />
                         <div className="min-w-0">
                           <Link
                             href={`/students/${student.studentId}`}
-                            className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED] hover:underline truncate block"
+                            className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED] hover:underline truncate block capitalize"
                           >
                             {student.studentName}
                           </Link>
                           <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] truncate">
-                            {student.parentName || "Parent"} • {student.enrolledBatchNames.join(", ") || "Batch"}
+                            {student.parentName || "Parent"} ·{" "}
+                            {student.enrolledBatchNames.join(", ") || "Batch"}
                           </div>
                         </div>
                       </div>
 
                       <div className="text-right sm:hidden shrink-0">
-                        <div className="text-sm font-bold font-mono text-[#18181B] dark:text-[#EDEDED]">
+                        <div className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED] tabular-nums">
                           ₹{student.balanceRemaining.toLocaleString("en-IN")}
                         </div>
-                        <div className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
+                        <div className="text-[11px] text-[#71717A] dark:text-[#A1A1AA]">
                           due
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-end sm:justify-start gap-2.5 shrink-0">
+                    <div className="flex items-center justify-end sm:justify-start gap-3 shrink-0">
                       <div className="text-right hidden sm:block">
-                        <div className="text-sm font-bold font-mono text-[#18181B] dark:text-[#EDEDED]">
+                        <div className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED] tabular-nums">
                           ₹{student.balanceRemaining.toLocaleString("en-IN")}
-                        </div>
-                        <div className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
-                          due
                         </div>
                       </div>
 
                       <div className="flex items-center gap-1.5 w-full sm:w-auto justify-end">
                         <button
                           onClick={() => setReminderStudent(student)}
-                          className="h-8 px-3 sm:px-2.5 sm:w-auto rounded-lg bg-[#FFFFFF] dark:bg-[#262626] border border-black/[0.08] dark:border-white/[0.12] hover:bg-[#F4F4F0] dark:hover:bg-[#323232] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95"
+                          className="h-8 px-3 sm:px-2.5 sm:w-8 sm:p-0 rounded-lg border border-black/[0.08] dark:border-white/[0.1] bg-[#FFFFFF] dark:bg-[#191919] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] text-xs font-medium text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95"
                           title="Send WhatsApp Reminder"
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
@@ -250,7 +321,7 @@ export function DashboardView({ initialData }: DashboardViewProps) {
                         </button>
                         <button
                           onClick={() => handleOpenPayment(student)}
-                          className="h-8 px-3 sm:px-2.5 sm:w-auto rounded-lg bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-white text-white dark:text-[#121212] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95"
+                          className="h-8 px-3 sm:px-2.5 sm:w-8 sm:p-0 rounded-lg bg-[#18181B] sm:bg-[#FFFFFF] dark:bg-[#EDEDED] sm:dark:bg-[#191919] border border-transparent sm:border-black/[0.08] sm:dark:border-white/[0.1] hover:bg-[#27272A] sm:hover:bg-[#18181B] dark:hover:bg-white sm:dark:hover:bg-[#EDEDED] text-white sm:text-[#18181B] dark:text-[#121212] sm:dark:text-[#EDEDED] sm:hover:text-white sm:dark:hover:text-[#121212] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer active:scale-95"
                           title="Collect Payment"
                         >
                           <CreditCard className="w-3.5 h-3.5" />
@@ -262,7 +333,7 @@ export function DashboardView({ initialData }: DashboardViewProps) {
                 ))}
               </div>
             )}
-          </div>
+          </section>
         </div>
       </div>
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { PaymentMethod } from "@/types/fees";
-import { Check, Copy, MessageCircle, X, ShieldCheck } from "lucide-react";
+import { Check, Copy, MessageCircle, X } from "lucide-react";
 import { useModalClose } from "@/hooks/use-modal-close";
 
 interface ReceiptModalProps {
@@ -70,101 +70,105 @@ Teacher: ${receiptData.teacherName || "Tuition Teacher"}`;
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/70 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/45 dark:bg-black/75 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-[#FFFFFF] dark:bg-[#1C1C1C] rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-black/[0.08] dark:border-white/[0.12] shadow-2xl flex flex-col gap-5 max-h-[92vh] overflow-y-auto"
+        className="w-full max-w-md bg-[#FFFFFF] dark:bg-[#191919] rounded-2xl border border-black/[0.08] dark:border-white/[0.1] shadow-2xl overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-150"
       >
-        <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <h2 className="font-heading text-lg font-bold text-[#18181B] dark:text-[#EDEDED]">
+        <div className="px-6 py-4 border-b border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
+          <div>
+            <h2 className="font-heading text-lg font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED]">
               Payment Receipt
             </h2>
+            <span className="text-xs font-mono text-[#71717A] dark:text-[#A1A1AA]">
+              {receiptData.receiptNumber}
+            </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] rounded-lg hover:bg-[#F4F4F0] dark:hover:bg-[#262626] transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="rounded-2xl p-5 bg-[#FBFBF9] dark:bg-[#161616] border border-black/[0.08] dark:border-white/[0.1] flex flex-col gap-4 font-sans text-[#18181B] dark:text-[#EDEDED]">
-          <div className="flex items-start justify-between border-b border-black/[0.06] dark:border-white/[0.08] pb-3">
+        {/* Clean editorial voucher surface */}
+        <div className="px-6 py-6 bg-[#FBFBF9] dark:bg-[#141414] flex flex-col">
+          <div className="pb-5 border-b border-black/[0.08] dark:border-white/[0.08] flex items-baseline justify-between gap-4">
             <div>
-              <span className="text-xs uppercase font-semibold text-[#71717A] dark:text-[#A1A1AA] tracking-wider block">
-                Official Tuition Receipt
-              </span>
-              <span className="text-base font-bold font-heading">
-                {receiptData.teacherName || "Tuition Center"}
-              </span>
-            </div>
-            <div className="text-right">
               <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] block">
-                Receipt #
+                Amount Received
               </span>
-              <span className="text-xs font-bold font-mono">
-                {receiptData.receiptNumber}
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div>
-              <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] block">Student</span>
-              <span className="font-semibold text-sm">{receiptData.studentName}</span>
-              {receiptData.parentName && (
-                <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] block mt-0.5">
-                  Parent: {receiptData.parentName}
-                </span>
-              )}
-            </div>
-            <div className="text-right">
-              <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] block">Billing Month</span>
-              <span className="font-semibold text-sm">{formattedMonth}</span>
-              <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] block mt-0.5">
-                Paid: {receiptData.paymentDate || "Today"}
+              <span className="font-heading text-3xl font-extrabold tracking-tight text-[#18181B] dark:text-[#EDEDED] tabular-nums mt-1 block">
+                ₹{Number(receiptData.amount).toLocaleString("en-IN")}
               </span>
             </div>
-          </div>
-
-          <div className="p-3.5 rounded-xl bg-[#FFFFFF] dark:bg-[#202020] border border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-xs text-[#71717A] dark:text-[#A1A1AA]">Amount Received</span>
-              <span className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
-                Via {receiptData.paymentMethod.toUpperCase()}
-              </span>
-            </div>
-            <span className="text-2xl font-bold font-heading tabular-nums font-mono text-[#18181B] dark:text-[#EDEDED]">
-              ₹{Number(receiptData.amount).toLocaleString("en-IN")}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] text-xs font-semibold shrink-0">
+              <Check className="w-3 h-3" />
+              <span>Confirmed</span>
             </span>
           </div>
 
-          <div className="flex items-center justify-between pt-1 text-xs text-[#71717A] dark:text-[#A1A1AA]">
-            <span>Status: <strong className="text-emerald-600 dark:text-emerald-400 font-semibold">Payment Confirmed</strong></span>
-            <span>Recorded in Scribadoo</span>
-          </div>
+          <dl className="divide-y divide-black/[0.05] dark:divide-white/[0.06] text-xs">
+            <div className="py-3 flex items-center justify-between gap-4">
+              <dt className="text-[#71717A] dark:text-[#A1A1AA]">Student</dt>
+              <dd className="font-semibold text-[#18181B] dark:text-[#EDEDED] text-right">
+                {receiptData.studentName}
+              </dd>
+            </div>
+            {receiptData.parentName && (
+              <div className="py-3 flex items-center justify-between gap-4">
+                <dt className="text-[#71717A] dark:text-[#A1A1AA]">Parent</dt>
+                <dd className="font-medium text-[#18181B] dark:text-[#EDEDED] text-right">
+                  {receiptData.parentName}
+                </dd>
+              </div>
+            )}
+            <div className="py-3 flex items-center justify-between gap-4">
+              <dt className="text-[#71717A] dark:text-[#A1A1AA]">Billing month</dt>
+              <dd className="font-medium text-[#18181B] dark:text-[#EDEDED] text-right">
+                {formattedMonth}
+              </dd>
+            </div>
+            <div className="py-3 flex items-center justify-between gap-4">
+              <dt className="text-[#71717A] dark:text-[#A1A1AA]">Payment date</dt>
+              <dd className="font-medium text-[#18181B] dark:text-[#EDEDED] text-right tabular-nums">
+                {receiptData.paymentDate || "Today"}
+              </dd>
+            </div>
+            <div className="py-3 flex items-center justify-between gap-4">
+              <dt className="text-[#71717A] dark:text-[#A1A1AA]">Payment mode</dt>
+              <dd className="font-semibold uppercase text-[#18181B] dark:text-[#EDEDED] text-right">
+                {receiptData.paymentMethod.replace("_", " ")}
+              </dd>
+            </div>
+            <div className="py-3 pb-0 flex items-center justify-between gap-4">
+              <dt className="text-[#71717A] dark:text-[#A1A1AA]">Issued by</dt>
+              <dd className="font-medium text-[#18181B] dark:text-[#EDEDED] text-right">
+                {receiptData.teacherName || "Tuition Teacher"}
+              </dd>
+            </div>
+          </dl>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
+        <div className="px-6 py-4 bg-[#FFFFFF] dark:bg-[#191919] border-t border-black/[0.06] dark:border-white/[0.08] flex flex-col sm:flex-row items-center gap-2">
           <button
             type="button"
             onClick={handleCopy}
-            className="w-full sm:flex-1 h-9 px-3 rounded-xl border border-black/[0.08] dark:border-white/[0.12] bg-[#FFFFFF] dark:bg-[#262626] hover:bg-[#F4F4F0] dark:hover:bg-[#323232] text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+            className="w-full sm:flex-1 h-9 px-3 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-[#FFFFFF] dark:bg-[#191919] hover:bg-[#F4F4F0] dark:hover:bg-[#242424] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Copied to clipboard</span>
+                <Check className="w-3.5 h-3.5" />
+                <span>Copied</span>
               </>
             ) : (
               <>
                 <Copy className="w-3.5 h-3.5 text-[#71717A] dark:text-[#A1A1AA]" />
-                <span>Copy receipt text</span>
+                <span>Copy receipt</span>
               </>
             )}
           </button>
@@ -174,7 +178,7 @@ Teacher: ${receiptData.teacherName || "Tuition Teacher"}`;
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:flex-1 h-9 px-4 rounded-xl bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] text-xs font-bold hover:bg-[#27272A] dark:hover:bg-white transition-colors cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
+              className="w-full sm:flex-1 h-9 px-4 rounded-xl bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] text-xs font-semibold hover:bg-[#27272A] dark:hover:bg-white transition-colors cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span>Share on WhatsApp</span>

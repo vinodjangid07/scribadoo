@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { OverdueStudentItem } from "@/types/dashboard";
-import { MessageCircle, Copy, Check, X, Send } from "lucide-react";
+import { Copy, Check, X, Send } from "lucide-react";
 import { useModalClose } from "@/hooks/use-modal-close";
 
 interface WhatsappReminderModalProps {
@@ -83,97 +83,85 @@ export function WhatsappReminderModal({
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 dark:bg-black/70 backdrop-blur-xs"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/45 dark:bg-black/75 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg bg-[#FFFFFF] dark:bg-[#1C1C1C] rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-black/[0.08] dark:border-white/[0.12] shadow-2xl flex flex-col gap-5 max-h-[92vh] overflow-y-auto"
+        className="w-full max-w-lg bg-[#FFFFFF] dark:bg-[#191919] rounded-2xl border border-black/[0.08] dark:border-white/[0.1] shadow-2xl overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-150"
       >
-        <div className="flex items-center justify-between pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
-          <div className="flex flex-col">
-            <h2 className="font-heading text-lg font-bold text-[#18181B] dark:text-[#EDEDED] flex items-center gap-2">
-              <MessageCircle className="w-5 h-5 text-[#71717A] dark:text-[#A1A1AA]" />
-              <span>WhatsApp Fee Reminder</span>
+        <div className="px-6 py-4 border-b border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
+          <div>
+            <h2 className="font-heading text-lg font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED]">
+              WhatsApp Fee Reminder
             </h2>
-            <span className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
-              {student.studentName} • Pending: ₹{student.balanceRemaining.toLocaleString("en-IN")}
+            <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] tabular-nums">
+              {student.studentName} · ₹{student.balanceRemaining.toLocaleString("en-IN")} pending
             </span>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#71717A] dark:text-[#A1A1AA] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-[#18181B] dark:text-[#EDEDED]">
-            Select Message Template
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              type="button"
-              onClick={() => setSelectedTemplate("english")}
-              className={`h-9 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
-                selectedTemplate === "english"
-                  ? "bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] border-transparent"
-                  : "bg-[#FFFFFF] dark:bg-[#1C1C1C] border-black/[0.08] dark:border-white/[0.12] text-[#71717A] dark:text-[#A1A1AA] hover:bg-[#F4F4F0] dark:hover:bg-[#262626]"
-              }`}
-            >
-              English Polite
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedTemplate("hindi")}
-              className={`h-9 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
-                selectedTemplate === "hindi"
-                  ? "bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] border-transparent"
-                  : "bg-[#FFFFFF] dark:bg-[#1C1C1C] border-black/[0.08] dark:border-white/[0.12] text-[#71717A] dark:text-[#A1A1AA] hover:bg-[#F4F4F0] dark:hover:bg-[#262626]"
-              }`}
-            >
-              Hindi Friendly
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedTemplate("short")}
-              className={`h-9 px-3 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
-                selectedTemplate === "short"
-                  ? "bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] border-transparent"
-                  : "bg-[#FFFFFF] dark:bg-[#1C1C1C] border-black/[0.08] dark:border-white/[0.12] text-[#71717A] dark:text-[#A1A1AA] hover:bg-[#F4F4F0] dark:hover:bg-[#262626]"
-              }`}
-            >
-              Short & Direct
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center justify-between">
+        <div className="p-6 flex flex-col gap-5 overflow-y-auto">
+          <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-[#18181B] dark:text-[#EDEDED]">
-              Message Preview (Editable)
+              Message template
             </label>
-            <span className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
-              To: {student.parentPhone}
-            </span>
+            <div className="grid grid-cols-3 gap-2">
+              {(
+                [
+                  { id: "english", label: "English" },
+                  { id: "hindi", label: "Hindi" },
+                  { id: "short", label: "Brief" },
+                ] as const
+              ).map((tpl) => (
+                <button
+                  key={tpl.id}
+                  type="button"
+                  onClick={() => setSelectedTemplate(tpl.id)}
+                  className={`h-9 px-3 rounded-xl border text-xs font-medium transition-colors cursor-pointer ${
+                    selectedTemplate === tpl.id
+                      ? "bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] border-transparent font-semibold"
+                      : "bg-[#FBFBF9] dark:bg-[#141414] border-black/[0.08] dark:border-white/[0.08] text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED]"
+                  }`}
+                >
+                  {tpl.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <textarea
-            rows={4}
-            value={customText}
-            onChange={(e) => setCustomText(e.target.value)}
-            className="w-full p-3 bg-[#FBFBF9] dark:bg-[#181818] border border-black/[0.08] dark:border-white/[0.12] rounded-2xl text-xs text-[#18181B] dark:text-[#EDEDED] leading-relaxed outline-none focus:border-black/[0.25] dark:focus:border-white/[0.3] transition-colors resize-none"
-          />
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-[#18181B] dark:text-[#EDEDED]">
+                Message preview
+              </label>
+              <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] tabular-nums">
+                To: {student.parentPhone}
+              </span>
+            </div>
+
+            <textarea
+              rows={4}
+              value={customText}
+              onChange={(e) => setCustomText(e.target.value)}
+              className="w-full p-3.5 bg-[#FBFBF9] dark:bg-[#141414] border border-black/[0.08] dark:border-white/[0.1] rounded-xl text-xs text-[#18181B] dark:text-[#EDEDED] leading-relaxed outline-none focus:border-black/[0.25] dark:focus:border-white/[0.25] transition-colors resize-none"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center justify-between gap-2.5 pt-2 border-t border-black/[0.06] dark:border-white/[0.08]">
+        <div className="px-6 py-4 bg-[#FAFAF9] dark:bg-[#141414] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between gap-2.5">
           <button
             type="button"
             onClick={handleCopy}
-            className="h-9 px-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.12] bg-[#FFFFFF] dark:bg-[#1C1C1C] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] transition-colors cursor-pointer flex items-center gap-1.5"
+            className="h-9 px-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-[#FFFFFF] dark:bg-[#191919] hover:bg-[#F4F4F0] dark:hover:bg-[#242424] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] transition-colors cursor-pointer flex items-center gap-1.5"
           >
             {copied ? (
               <>
@@ -192,7 +180,7 @@ export function WhatsappReminderModal({
             <button
               type="button"
               onClick={onClose}
-              className="h-9 px-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.12] text-xs font-semibold text-[#71717A] dark:text-[#A1A1AA] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] transition-colors cursor-pointer"
+              className="h-9 px-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-[#FFFFFF] dark:bg-[#191919] text-xs font-medium text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] hover:bg-[#F4F4F0] dark:hover:bg-[#242424] transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -203,7 +191,7 @@ export function WhatsappReminderModal({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={onClose}
-                className="h-9 px-4 rounded-xl bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] hover:bg-[#27272A] dark:hover:bg-white text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
+                className="h-9 px-4 rounded-xl bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] hover:bg-[#27272A] dark:hover:bg-white text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>Open in WhatsApp</span>
@@ -212,7 +200,7 @@ export function WhatsappReminderModal({
               <button
                 type="button"
                 disabled
-                className="h-9 px-4 rounded-xl bg-gray-200 dark:bg-gray-800 text-gray-400 text-xs font-bold cursor-not-allowed"
+                className="h-9 px-4 rounded-xl bg-black/[0.06] dark:bg-white/[0.08] text-[#71717A] text-xs font-semibold cursor-not-allowed"
               >
                 Invalid phone
               </button>

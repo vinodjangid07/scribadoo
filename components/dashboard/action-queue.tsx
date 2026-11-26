@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { MessageCircle, Zap, Megaphone } from "lucide-react";
+import { MessageCircle, Megaphone, ArrowRight } from "lucide-react";
 import type {
   TodayBatchSchedule,
   AttendanceRiskStudent,
@@ -55,60 +55,64 @@ export function ActionQueue({
   };
 
   return (
-    <div className="bg-[#FFFFFF] dark:bg-[#1C1C1C] border border-black/[0.06] dark:border-white/[0.08] rounded-2xl p-4 sm:p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
+    <section className="bg-[#FFFFFF] dark:bg-[#191919] border border-black/[0.07] dark:border-white/[0.08] rounded-2xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-black/[0.06] dark:border-white/[0.07] flex items-center justify-between gap-3">
+        <div className="flex items-baseline gap-2.5">
           <h2 className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED]">
-            Attention Required
+            Action Needed
           </h2>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] font-mono font-semibold">
-            {totalActionItems}
-          </span>
+          {totalActionItems > 0 && (
+            <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] tabular-nums">
+              {totalActionItems} {totalActionItems === 1 ? "item" : "items"}
+            </span>
+          )}
         </div>
-        <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] font-medium">
-          Priority triage
+        <span className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
+          Follow-ups
         </span>
       </div>
 
       {totalActionItems === 0 ? (
-        <div className="py-8 text-center border border-dashed border-black/[0.08] dark:border-white/[0.12] rounded-xl">
+        <div className="px-5 py-8 text-center">
           <p className="text-xs font-medium text-[#18181B] dark:text-[#EDEDED]">
             All caught up
           </p>
           <p className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-1">
-            No pending roll calls, absences, or overdue alerts.
+            No pending roll calls, consecutive absences, or overdue notices.
           </p>
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="divide-y divide-black/[0.05] dark:divide-white/[0.06]">
           {unrecordedBatches.map((batch) => (
             <div
               key={`batch-${batch.id}`}
-              className="p-3.5 rounded-xl bg-[#FAFAF9] dark:bg-[#181818] border border-black/[0.04] dark:border-white/[0.06] flex items-center justify-between gap-3"
+              className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#F9F9F7] dark:hover:bg-white/[0.025] transition-colors"
             >
-              <div className="min-w-0">
-                <div className="text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] truncate">
-                  Roll call pending: {batch.name}
-                </div>
-                <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5">
-                  Scheduled today, {batch.studentCount} students
+              <div className="min-w-0 flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#18181B] dark:bg-[#EDEDED] mt-1.5 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-[#18181B] dark:text-[#EDEDED] truncate">
+                    Roll call pending for {batch.name}
+                  </div>
+                  <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5 tabular-nums">
+                    Scheduled today · {batch.studentCount} students
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-2 shrink-0 pl-4 sm:pl-0">
                 <button
                   onClick={() => onMarkAllPresent(batch.id)}
-                  className="h-8 px-3 rounded-lg bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-white text-white dark:text-[#121212] text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
-                  title="Mark all present for today"
+                  className="h-8 px-3 rounded-lg bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-white text-white dark:text-[#121212] text-xs font-semibold transition-colors cursor-pointer active:scale-[0.98]"
                 >
-                  <Zap className="w-3 h-3" />
-                  <span>All Present</span>
+                  Mark all present
                 </button>
                 <Link
                   href={`/attendance?batchId=${batch.id}`}
-                  className="h-8 px-2.5 rounded-lg bg-[#FFFFFF] dark:bg-[#262626] border border-black/[0.08] dark:border-white/[0.12] hover:bg-[#F4F4F0] dark:hover:bg-[#323232] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] flex items-center transition-colors"
+                  className="h-8 px-2.5 rounded-lg border border-black/[0.08] dark:border-white/[0.1] hover:bg-[#F4F4F0] dark:hover:bg-[#242424] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] inline-flex items-center gap-1 transition-colors"
                 >
-                  Roll Call
+                  <span>Edit</span>
+                  <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
             </div>
@@ -117,56 +121,62 @@ export function ActionQueue({
           {consecutiveAbsences.map((student) => (
             <div
               key={`absence-${student.studentId}`}
-              className="p-3.5 rounded-xl bg-[#FAFAF9] dark:bg-[#181818] border border-black/[0.04] dark:border-white/[0.06] flex items-center justify-between gap-3"
+              className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#F9F9F7] dark:hover:bg-white/[0.025] transition-colors"
             >
-              <div className="min-w-0">
-                <div className="text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] truncate">
-                  {student.studentName} missed {student.consecutiveAbsences} classes
-                </div>
-                <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] truncate mt-0.5">
-                  {student.batchName}, parent {student.parentName || "not listed"}
+              <div className="min-w-0 flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#71717A] dark:bg-[#A1A1AA] mt-1.5 shrink-0" />
+                <div className="min-w-0">
+                  <div className="text-sm font-medium text-[#18181B] dark:text-[#EDEDED] truncate">
+                    {student.studentName} missed {student.consecutiveAbsences} classes in a row
+                  </div>
+                  <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] truncate mt-0.5">
+                    {student.batchName} · {student.parentName || "Parent"}
+                  </div>
                 </div>
               </div>
 
               <button
                 onClick={() => handleWhatsAppAbsenceInquiry(student)}
-                className="h-8 px-3 rounded-lg bg-[#FFFFFF] dark:bg-[#262626] border border-black/[0.08] dark:border-white/[0.12] hover:bg-[#F4F4F0] dark:hover:bg-[#323232] text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] flex items-center gap-1.5 transition-colors shrink-0 active:scale-[0.98] cursor-pointer"
+                className="h-8 px-3 rounded-lg border border-black/[0.08] dark:border-white/[0.1] hover:bg-[#F4F4F0] dark:hover:bg-[#242424] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] inline-flex items-center justify-center gap-1.5 transition-colors shrink-0 active:scale-[0.98] cursor-pointer self-start sm:self-auto ml-4 sm:ml-0"
               >
-                <MessageCircle className="w-3 h-3" />
-                <span>Check-in</span>
+                <MessageCircle className="w-3.5 h-3.5 text-[#71717A] dark:text-[#A1A1AA]" />
+                <span>Message parent</span>
               </button>
             </div>
           ))}
 
           {overdueSummary && (
-            <div className="p-3.5 rounded-xl bg-[#FAFAF9] dark:bg-[#181818] border border-black/[0.04] dark:border-white/[0.06] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-semibold text-[#18181B] dark:text-[#EDEDED]">
-                    {overdueSummary.overdueCount} students overdue for{" "}
-                    {formatMonthLabel(overdueSummary.month)}
-                  </span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] font-mono font-semibold">
-                    {overdueSummary.daysOverdue}d past due
-                  </span>
-                </div>
-                <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5">
-                  ₹{overdueSummary.totalPendingAmount.toLocaleString("en-IN")} pending across active batches
+            <div className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#F9F9F7] dark:hover:bg-white/[0.025] transition-colors">
+              <div className="min-w-0 flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-600 dark:bg-amber-400 mt-1.5 shrink-0" />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-medium text-[#18181B] dark:text-[#EDEDED]">
+                      {overdueSummary.overdueCount} students overdue for{" "}
+                      {formatMonthLabel(overdueSummary.month)}
+                    </span>
+                    <span className="text-xs font-mono text-[#71717A] dark:text-[#A1A1AA] tabular-nums">
+                      · {overdueSummary.daysOverdue}d past due
+                    </span>
+                  </div>
+                  <div className="text-xs text-[#71717A] dark:text-[#A1A1AA] mt-0.5 tabular-nums">
+                    ₹{overdueSummary.totalPendingAmount.toLocaleString("en-IN")} pending across active batches
+                  </div>
                 </div>
               </div>
 
               <button
                 onClick={onOpenBroadcastFeeReminder}
-                className="w-full sm:w-auto h-8 px-3 rounded-lg bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-white text-white dark:text-[#121212] text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors active:scale-[0.98] shrink-0 cursor-pointer"
+                className="w-full sm:w-auto h-8 px-3 rounded-lg bg-[#18181B] dark:bg-[#EDEDED] hover:bg-[#27272A] dark:hover:bg-white text-white dark:text-[#121212] text-xs font-semibold inline-flex items-center justify-center gap-1.5 transition-colors active:scale-[0.98] shrink-0 cursor-pointer"
                 title="Broadcast fee reminder to parents via WhatsApp"
               >
-                <Megaphone className="w-3 h-3" />
-                <span>Broadcast Reminder</span>
+                <Megaphone className="w-3.5 h-3.5" />
+                <span>Send reminders</span>
               </button>
             </div>
           )}
         </div>
       )}
-    </div>
+    </section>
   );
 }

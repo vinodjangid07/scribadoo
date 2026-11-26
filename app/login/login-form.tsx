@@ -56,15 +56,15 @@ export function LoginForm() {
   }, []);
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 sm:p-8 bg-[#FFFFFF] dark:bg-[#1C1C1C] border border-black/[0.08] dark:border-white/[0.12] rounded-3xl flex flex-col gap-6 shadow-xl">
+    <div className="w-full max-w-md mx-auto p-6 sm:p-8 bg-[#FFFFFF] dark:bg-[#191919] border border-black/[0.08] dark:border-white/[0.1] rounded-2xl flex flex-col gap-6 shadow-xl">
       <div className="flex flex-col gap-1.5">
-        <h1 className="font-heading text-3xl text-[#18181B] dark:text-[#EDEDED] font-bold tracking-tight">
+        <h1 className="font-heading text-2xl sm:text-3xl text-[#18181B] dark:text-[#EDEDED] font-bold tracking-tight">
           Scribadoo
         </h1>
         <p className="text-xs sm:text-sm text-[#71717A] dark:text-[#A1A1AA] leading-relaxed">
           {mode === "signin"
             ? "Sign in to manage your tuition batches and students."
-            : "Create your teacher account to start tracking."}
+            : "Create your teacher account to get started."}
         </p>
       </div>
 

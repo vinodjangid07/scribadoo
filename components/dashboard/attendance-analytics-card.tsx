@@ -31,30 +31,30 @@ function CustomChartTooltip({ active, payload }: any) {
   const data = payload[0].payload;
   if (!data.hasSession) {
     return (
-      <div className="p-2.5 rounded-xl border border-[#E4E4E7] dark:border-[#333333] bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] text-xs pointer-events-none">
+      <div className="px-3 py-2 rounded-xl border border-black/10 dark:border-white/10 bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] text-xs pointer-events-none shadow-lg">
         <div className="font-semibold">{data.fullDate}</div>
-        <div className="text-xs opacity-75 mt-0.5">No class conducted / recorded</div>
+        <div className="opacity-75 mt-0.5">No class scheduled or recorded</div>
       </div>
     );
   }
 
   return (
-    <div className="p-3 rounded-xl border border-[#E4E4E7] dark:border-[#333333] bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] text-xs pointer-events-none space-y-1">
+    <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] text-xs pointer-events-none space-y-1 shadow-lg">
       <div className="flex items-center justify-between gap-4 font-semibold">
         <span>{data.fullDate}</span>
-        <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-white/10 dark:bg-black/10">
-          {data.rate}% Turnout
+        <span className="tabular-nums px-1.5 py-0.5 rounded bg-white/10 dark:bg-black/10">
+          {data.rate}% turnout
         </span>
       </div>
-      <div className="text-xs opacity-80">{data.batchName}</div>
-      <div className="text-xs opacity-90 font-mono pt-1 border-t border-white/10 dark:border-black/10 flex items-center gap-2">
-        <span>{data.present} Present</span>
-        <span>•</span>
-        <span>{data.absent} Absent</span>
+      <div className="opacity-80">{data.batchName}</div>
+      <div className="opacity-90 tabular-nums pt-1 border-t border-white/10 dark:border-black/10 flex items-center gap-2">
+        <span>{data.present} present</span>
+        <span>·</span>
+        <span>{data.absent} absent</span>
         {data.late > 0 && (
           <>
-            <span>•</span>
-            <span>{data.late} Late</span>
+            <span>·</span>
+            <span>{data.late} late</span>
           </>
         )}
       </div>
@@ -131,6 +131,7 @@ export function AttendanceAnalyticsCard({
           holiday: totalHoliday,
           total: totalActive,
           rate,
+          barRate: rate,
           batchName: batchNames,
           isToday: i === 0,
         });
@@ -145,7 +146,8 @@ export function AttendanceAnalyticsCard({
           late: 0,
           holiday: 0,
           total: 0,
-          rate: 0,
+          rate: null as number | null,
+          barRate: 2,
           batchName: "",
           isToday: i === 0,
         });
@@ -158,10 +160,10 @@ export function AttendanceAnalyticsCard({
   const summary = useMemo(() => {
     const activeSessions = chartData.filter((d) => d.hasSession && d.total > 0);
     if (activeSessions.length === 0) {
-      return { avgRate: 100, sessionCount: 0, peakPresent: 0 };
+      return { avgRate: 0, sessionCount: 0, peakPresent: 0 };
     }
 
-    const totalRate = activeSessions.reduce((sum, d) => sum + d.rate, 0);
+    const totalRate = activeSessions.reduce((sum, d) => sum + (d.rate ?? 0), 0);
     const peak = Math.max(...activeSessions.map((d) => d.present + d.late));
 
     return {
@@ -186,15 +188,14 @@ export function AttendanceAnalyticsCard({
           dy={12}
           textAnchor="middle"
           fontSize={10}
-          fontFamily="monospace"
-          fontWeight={isToday ? 700 : 500}
+          fontWeight={isToday ? 600 : 400}
           fill={
             isToday
               ? isDark
                 ? "#EDEDED"
                 : "#18181B"
               : isDark
-              ? "#A1A1AA"
+              ? "#8E8E93"
               : "#71717A"
           }
         >
@@ -205,48 +206,48 @@ export function AttendanceAnalyticsCard({
   };
 
   return (
-    <div className="bg-[#FFFFFF] dark:bg-[#1C1C1C] border border-black/[0.06] dark:border-white/[0.08] rounded-2xl p-4 sm:p-5">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mb-4">
-        <div className="flex items-baseline gap-2">
+    <section className="bg-[#FFFFFF] dark:bg-[#191919] border border-black/[0.07] dark:border-white/[0.08] rounded-2xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-black/[0.06] dark:border-white/[0.07] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <div className="flex items-baseline gap-2.5">
           <h2 className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED]">
-            Attendance Trends &amp; Turnout
+            Attendance Trends
           </h2>
-          <span className="text-xs font-mono text-[#71717A] dark:text-[#A1A1AA]">
-            {range === "7d" ? "7d" : range === "14d" ? "14d" : "30d"}
+          <span className="text-xs text-[#71717A] dark:text-[#A1A1AA] tabular-nums">
+            Last {range === "7d" ? "7 days" : range === "14d" ? "14 days" : "30 days"}
           </span>
         </div>
 
         <div className="flex items-center justify-between lg:justify-end gap-2 w-full lg:w-auto overflow-x-auto scrollbar-none">
           <div className="flex items-center gap-1.5 min-w-0 flex-1 lg:flex-initial">
-            <div className="flex items-center p-0.5 rounded-lg bg-[#F4F4F0] dark:bg-[#262626] border border-black/[0.06] dark:border-white/[0.08] shrink-0">
+            <div className="flex items-center p-0.5 rounded-lg bg-[#F4F4F0] dark:bg-[#242424] border border-black/[0.06] dark:border-white/[0.08] shrink-0">
+              <button
+                onClick={() => setChartType("area")}
+                className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                  chartType === "area"
+                    ? "bg-[#FFFFFF] dark:bg-[#191919] text-[#18181B] dark:text-[#EDEDED]"
+                    : "text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED]"
+                }`}
+                title="Line Chart"
+              >
+                <LineChartIcon className="w-3.5 h-3.5" />
+              </button>
               <button
                 onClick={() => setChartType("bar")}
                 className={`p-1.5 rounded-md transition-colors cursor-pointer ${
                   chartType === "bar"
-                    ? "bg-[#FFFFFF] dark:bg-[#1C1C1C] text-[#18181B] dark:text-[#EDEDED] font-semibold"
+                    ? "bg-[#FFFFFF] dark:bg-[#191919] text-[#18181B] dark:text-[#EDEDED]"
                     : "text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED]"
                 }`}
                 title="Bar Chart"
               >
                 <BarChart2 className="w-3.5 h-3.5" />
               </button>
-              <button
-                onClick={() => setChartType("area")}
-                className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                  chartType === "area"
-                    ? "bg-[#FFFFFF] dark:bg-[#1C1C1C] text-[#18181B] dark:text-[#EDEDED] font-semibold"
-                    : "text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED]"
-                }`}
-                title="Area Curve Chart"
-              >
-                <LineChartIcon className="w-3.5 h-3.5" />
-              </button>
             </div>
 
             <select
               value={selectedBatchId}
               onChange={(e) => setSelectedBatchId(e.target.value)}
-              className="h-8 px-2.5 rounded-lg bg-[#FFFFFF] dark:bg-[#1C1C1C] border border-black/[0.08] dark:border-white/[0.12] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] focus:outline-none min-w-0 flex-1 lg:w-auto truncate cursor-pointer"
+              className="h-8 px-2.5 rounded-lg bg-[#FFFFFF] dark:bg-[#191919] border border-black/[0.08] dark:border-white/[0.1] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] focus:outline-none min-w-0 flex-1 lg:w-auto truncate cursor-pointer"
             >
               <option value="all">All Batches</option>
               {allBatches.map((b) => (
@@ -257,7 +258,7 @@ export function AttendanceAnalyticsCard({
             </select>
           </div>
 
-          <div className="flex items-center p-0.5 rounded-lg bg-[#F4F4F0] dark:bg-[#262626] border border-black/[0.06] dark:border-white/[0.08] shrink-0">
+          <div className="flex items-center p-0.5 rounded-lg bg-[#F4F4F0] dark:bg-[#242424] border border-black/[0.06] dark:border-white/[0.08] shrink-0">
             {(
               [
                 { id: "7d", label: "7D" },
@@ -268,9 +269,9 @@ export function AttendanceAnalyticsCard({
               <button
                 key={opt.id}
                 onClick={() => setRange(opt.id)}
-                className={`h-7 px-2 sm:px-2.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                className={`h-7 px-2.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                   range === opt.id
-                    ? "bg-[#FFFFFF] dark:bg-[#1C1C1C] text-[#18181B] dark:text-[#EDEDED] font-semibold"
+                    ? "bg-[#FFFFFF] dark:bg-[#191919] text-[#18181B] dark:text-[#EDEDED] font-semibold"
                     : "text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED]"
                 }`}
               >
@@ -281,30 +282,31 @@ export function AttendanceAnalyticsCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 mb-3">
-        <div className="p-3 rounded-xl bg-[#FAFAF9] dark:bg-[#181818] border border-black/[0.04] dark:border-white/[0.06]">
-          <div className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
-            Avg Attendance
+      {/* Inline hairline metric strip — zero card-in-card borders */}
+      <div className="grid grid-cols-3 divide-x divide-black/[0.06] dark:divide-white/[0.07] border-b border-black/[0.06] dark:border-white/[0.07]">
+        <div className="px-5 py-3.5">
+          <div className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
+            Avg Turnout
           </div>
-          <div className="text-base sm:text-lg font-bold font-mono text-[#18181B] dark:text-[#EDEDED] mt-0.5 truncate">
-            {summary.avgRate}%
+          <div className="font-heading text-lg sm:text-xl font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED] mt-0.5 tabular-nums">
+            {summary.sessionCount > 0 ? `${summary.avgRate}%` : "—"}
           </div>
         </div>
 
-        <div className="p-3 rounded-xl bg-[#FAFAF9] dark:bg-[#181818] border border-black/[0.04] dark:border-white/[0.06]">
-          <div className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
-            Classes Conducted
+        <div className="px-5 py-3.5">
+          <div className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
+            Classes Held
           </div>
-          <div className="text-base sm:text-lg font-bold font-mono text-[#18181B] dark:text-[#EDEDED] mt-0.5 truncate">
+          <div className="font-heading text-lg sm:text-xl font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED] mt-0.5 tabular-nums">
             {summary.sessionCount}
           </div>
         </div>
 
-        <div className="p-3 rounded-xl bg-[#FAFAF9] dark:bg-[#181818] border border-black/[0.04] dark:border-white/[0.06]">
-          <div className="text-xs font-medium text-[#71717A] dark:text-[#A1A1AA]">
+        <div className="px-5 py-3.5">
+          <div className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
             Peak Turnout
           </div>
-          <div className="text-base sm:text-lg font-bold font-mono text-[#18181B] dark:text-[#EDEDED] mt-0.5 truncate">
+          <div className="font-heading text-lg sm:text-xl font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED] mt-0.5 tabular-nums truncate">
             {summary.peakPresent}{" "}
             <span className="text-xs font-normal font-sans text-[#71717A] dark:text-[#A1A1AA]">
               students
@@ -313,111 +315,139 @@ export function AttendanceAnalyticsCard({
         </div>
       </div>
 
-      <div className="h-44 w-full pt-2">
-        {mounted ? (
-          <ResponsiveContainer width="100%" height="100%">
-            {chartType === "bar" ? (
-              <BarChart
-                data={chartData}
-                barCategoryGap="20%"
-                margin={{ top: 8, right: 4, left: -24, bottom: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke={isDark ? "#2A2A2A" : "#E5E5E0"}
-                />
-                <XAxis
-                  dataKey="formattedDate"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={renderCustomTick}
-                  interval={range === "30d" ? 3 : range === "14d" ? 1 : 0}
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{
-                    fontSize: 10,
-                    fill: isDark ? "#A3A3A3" : "#52525B",
-                    fontFamily: "monospace",
-                  }}
-                  tickFormatter={(v) => `${v}%`}
-                />
-                <Tooltip
-                  content={<CustomChartTooltip />}
-                  cursor={{ fill: isDark ? "#26262650" : "#EDEDEA80" }}
-                />
-                <Bar
-                  dataKey="rate"
-                  radius={[6, 6, 0, 0]}
-                  isAnimationActive={true}
-                  animationDuration={700}
-                  animationEasing="ease-out"
+      <div className="px-4 sm:px-5 py-5">
+        <div className="h-52 w-full">
+          {mounted ? (
+            <ResponsiveContainer width="100%" height="100%">
+              {chartType === "bar" ? (
+                <BarChart
+                  data={chartData}
+                  barCategoryGap="22%"
+                  margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
                 >
-                  {chartData.map((entry, index) => {
-                    const fillColor = !entry.hasSession
-                      ? isDark
-                        ? "#2A2A2A"
-                        : "#E5E5E0"
-                      : isDark
-                      ? "#EDEDED"
-                      : "#18181B";
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke={isDark ? "#262626" : "#EEEEEC"}
+                  />
+                  <XAxis
+                    dataKey="formattedDate"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={renderCustomTick}
+                    interval={range === "30d" ? 3 : range === "14d" ? 1 : 0}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    ticks={[0, 50, 100]}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{
+                      fontSize: 10,
+                      fill: isDark ? "#8E8E93" : "#71717A",
+                    }}
+                    tickFormatter={(v) => `${v}%`}
+                  />
+                  <Tooltip
+                    content={<CustomChartTooltip />}
+                    cursor={{ fill: isDark ? "#26262650" : "#F4F4F080" }}
+                  />
+                  <Bar
+                    dataKey="barRate"
+                    radius={[5, 5, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={600}
+                    animationEasing="ease-out"
+                  >
+                    {chartData.map((entry, index) => {
+                      const fillColor = !entry.hasSession
+                        ? isDark
+                          ? "#262626"
+                          : "#EAEAE6"
+                        : isDark
+                        ? "#EDEDED"
+                        : "#18181B";
 
-                    return <Cell key={`cell-${index}`} fill={fillColor} />;
-                  })}
-                </Bar>
-              </BarChart>
-            ) : (
-              <AreaChart
-                data={chartData}
-                margin={{ top: 8, right: 4, left: -24, bottom: 0 }}
-              >
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                  stroke={isDark ? "#2A2A2A" : "#E5E5E0"}
-                />
-                <XAxis
-                  dataKey="formattedDate"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={renderCustomTick}
-                  interval={range === "30d" ? 3 : range === "14d" ? 1 : 0}
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{
-                    fontSize: 10,
-                    fill: isDark ? "#A3A3A3" : "#52525B",
-                    fontFamily: "monospace",
-                  }}
-                  tickFormatter={(v) => `${v}%`}
-                />
-                <Tooltip content={<CustomChartTooltip />} />
-                <Area
-                  type="monotone"
-                  dataKey="rate"
-                  stroke={isDark ? "#EDEDED" : "#18181B"}
-                  strokeWidth={2}
-                  fillOpacity={0.08}
-                  fill={isDark ? "#EDEDED" : "#18181B"}
-                  isAnimationActive={true}
-                  animationDuration={800}
-                  animationEasing="ease-out"
-                />
-              </AreaChart>
-            )}
-          </ResponsiveContainer>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs text-[#52525B] dark:text-[#A3A3A3]">
-            Loading chart...
-          </div>
-        )}
+                      return <Cell key={`cell-${index}`} fill={fillColor} />;
+                    })}
+                  </Bar>
+                </BarChart>
+              ) : (
+                <AreaChart
+                  data={chartData}
+                  margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="turnoutFade" x1="0" y1="0" x2="0" y2="1">
+                      <stop
+                        offset="0%"
+                        stopColor={isDark ? "#EDEDED" : "#18181B"}
+                        stopOpacity={0.14}
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor={isDark ? "#EDEDED" : "#18181B"}
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke={isDark ? "#262626" : "#EEEEEC"}
+                  />
+                  <XAxis
+                    dataKey="formattedDate"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={renderCustomTick}
+                    interval={range === "30d" ? 3 : range === "14d" ? 1 : 0}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    ticks={[0, 50, 100]}
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{
+                      fontSize: 10,
+                      fill: isDark ? "#8E8E93" : "#71717A",
+                    }}
+                    tickFormatter={(v) => `${v}%`}
+                  />
+                  <Tooltip content={<CustomChartTooltip />} />
+                  <Area
+                    type="monotone"
+                    dataKey="rate"
+                    connectNulls={true}
+                    stroke={isDark ? "#EDEDED" : "#18181B"}
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#turnoutFade)"
+                    dot={{
+                      r: 3,
+                      strokeWidth: 1.5,
+                      fill: isDark ? "#191919" : "#FFFFFF",
+                      stroke: isDark ? "#EDEDED" : "#18181B",
+                    }}
+                    activeDot={{
+                      r: 4.5,
+                      strokeWidth: 0,
+                      fill: isDark ? "#EDEDED" : "#18181B",
+                    }}
+                    isAnimationActive={true}
+                    animationDuration={650}
+                    animationEasing="ease-out"
+                  />
+                </AreaChart>
+              )}
+            </ResponsiveContainer>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-xs text-[#71717A] dark:text-[#A1A1AA]">
+              Loading chart...
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

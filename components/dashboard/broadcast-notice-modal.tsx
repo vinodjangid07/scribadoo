@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useId } from "react";
-import { X, Megaphone, Copy, Check, MessageCircle } from "lucide-react";
+import { X, Copy, Check, MessageCircle } from "lucide-react";
 import { useModalClose } from "@/hooks/use-modal-close";
 
 interface BroadcastNoticeModalProps {
@@ -45,7 +45,7 @@ export function BroadcastNoticeModal({
       case "timing":
         return `Dear Parents & Students of ${targetLabel},\n\nPlease note that today's tuition class schedule has been revised. The class will now take place from [Time, e.g. 5:00 PM – 7:00 PM].\n\nKindly ensure punctual attendance.\n\nWarm regards,\n${teacherName}`;
       case "holiday":
-        return `Dear Parents & Students of ${targetLabel},\n\nPlease be informed that there will be NO tuition class today due to [e.g. inclement weather / festive holiday]. The syllabus will be covered in the upcoming session.\n\nWarm regards,\n${teacherName}`;
+        return `Dear Parents & Students of ${targetLabel},\n\nPlease be informed that there will be NO tuition class today due to [e.g. weather / holiday]. The syllabus will be covered in the upcoming session.\n\nWarm regards,\n${teacherName}`;
       case "test":
         return `Dear Students & Parents of ${targetLabel},\n\nThis is an announcement regarding an upcoming assessment test on [Date / Day]. Topic: [e.g. Chapter 4 & 5].\n\nPlease ensure thorough revision.\n\nWarm regards,\n${teacherName}`;
       case "fees":
@@ -77,41 +77,37 @@ export function BroadcastNoticeModal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/45 dark:bg-black/75 backdrop-blur-xs animate-in fade-in duration-150"
     >
       <div
         ref={modalRef}
-        className="bg-white dark:bg-[#1C1C1C] border border-[#E4E4E7] dark:border-[#262626] rounded-2xl w-full max-w-lg shadow-xl overflow-hidden animate-in zoom-in-95 duration-150"
+        className="bg-[#FFFFFF] dark:bg-[#191919] border border-black/[0.08] dark:border-white/[0.1] rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[92vh] animate-in zoom-in-95 duration-150"
       >
-        <div className="flex items-center justify-between p-4 border-b border-[#F4F4F0] dark:border-[#262626]">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#F4F4F0] dark:bg-[#262626] flex items-center justify-center">
-              <Megaphone className="w-4 h-4 text-[#18181B] dark:text-[#EDEDED]" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-[#18181B] dark:text-[#EDEDED]">
-                Broadcast Batch Notice
-              </h3>
-              <p className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
-                Format and share announcements to parent groups via WhatsApp
-              </p>
-            </div>
+        <div className="px-6 py-4 border-b border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
+          <div>
+            <h3 className="font-heading text-lg font-bold tracking-tight text-[#18181B] dark:text-[#EDEDED]">
+              Broadcast Notice
+            </h3>
+            <p className="text-xs text-[#71717A] dark:text-[#A1A1AA]">
+              Prepare and share class announcements to parent groups.
+            </p>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1 rounded-lg text-[#71717A] dark:text-[#A1A1AA] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#71717A] dark:text-[#A1A1AA] hover:text-[#18181B] dark:hover:text-[#EDEDED] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="p-6 space-y-4 overflow-y-auto">
           <div>
             <label
               htmlFor={batchSelectId}
-              className="block text-xs font-medium text-[#71717A] dark:text-[#A1A1AA] mb-1.5"
+              className="block text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] mb-1.5"
             >
-              Select Target Batch
+              Target batch
             </label>
             <select
               id={batchSelectId}
@@ -120,7 +116,7 @@ export function BroadcastNoticeModal({
                 setSelectedBatchId(e.target.value);
                 setCustomText("");
               }}
-              className="w-full h-9 px-3 rounded-xl border border-[#E4E4E7] dark:border-[#262626] bg-[#FAFAF9] dark:bg-[#181818] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] focus:outline-none focus:ring-1 focus:ring-[#18181B] dark:focus:ring-[#EDEDED]"
+              className="w-full h-10 px-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-[#FBFBF9] dark:bg-[#141414] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] focus:outline-none focus:border-black/[0.25] dark:focus:border-white/[0.25]"
             >
               <option value="all">All Active Batches &amp; Students</option>
               {batches.map((b) => (
@@ -132,13 +128,13 @@ export function BroadcastNoticeModal({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-[#71717A] dark:text-[#A1A1AA] mb-1.5">
-              Notice Type
+            <label className="block text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] mb-1.5">
+              Notice template
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
                 { key: "timing", label: "Timing Change" },
-                { key: "holiday", label: "Holiday / Rain" },
+                { key: "holiday", label: "Holiday / Off" },
                 { key: "test", label: "Upcoming Test" },
                 { key: "fees", label: "Fee Reminder" },
                 { key: "custom", label: "Custom Note" },
@@ -150,10 +146,10 @@ export function BroadcastNoticeModal({
                     setTemplateKey(t.key as NoticeTemplateKey);
                     setCustomText("");
                   }}
-                  className={`h-8 px-2.5 rounded-lg text-xs font-medium transition-colors border ${
+                  className={`h-8 px-2.5 rounded-xl text-xs font-medium transition-colors border cursor-pointer ${
                     templateKey === t.key
                       ? "bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] border-transparent font-semibold"
-                      : "bg-[#FAFAF9] dark:bg-[#181818] text-[#71717A] dark:text-[#A1A1AA] border-[#E4E4E7] dark:border-[#262626] hover:text-[#18181B] dark:hover:text-[#EDEDED]"
+                      : "bg-[#FBFBF9] dark:bg-[#141414] text-[#71717A] dark:text-[#A1A1AA] border-black/[0.08] dark:border-white/[0.08] hover:text-[#18181B] dark:hover:text-[#EDEDED]"
                   }`}
                 >
                   {t.label}
@@ -163,33 +159,33 @@ export function BroadcastNoticeModal({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-[#71717A] dark:text-[#A1A1AA] mb-1.5">
-              Message Preview (Editable)
+            <label className="block text-xs font-semibold text-[#18181B] dark:text-[#EDEDED] mb-1.5">
+              Message preview
             </label>
             <textarea
               rows={6}
               value={currentMessage}
               onChange={(e) => setCustomText(e.target.value)}
-              className="w-full p-3 rounded-xl border border-[#E4E4E7] dark:border-[#262626] bg-[#FAFAF9] dark:bg-[#181818] text-xs font-sans leading-relaxed text-[#18181B] dark:text-[#EDEDED] focus:outline-none focus:ring-1 focus:ring-[#18181B] dark:focus:ring-[#EDEDED] resize-none"
+              className="w-full p-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-[#FBFBF9] dark:bg-[#141414] text-xs leading-relaxed text-[#18181B] dark:text-[#EDEDED] focus:outline-none focus:border-black/[0.25] dark:focus:border-white/[0.25] resize-none"
             />
           </div>
         </div>
 
-        <div className="p-3 sm:p-4 bg-[#FAFAF9] dark:bg-[#181818] border-t border-[#F4F4F0] dark:border-[#262626] flex items-center justify-between gap-2.5">
+        <div className="px-6 py-4 bg-[#FAFAF9] dark:bg-[#141414] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between gap-2.5">
           <button
             type="button"
             onClick={handleCopy}
-            className="h-9 px-3 sm:px-3.5 rounded-xl border border-[#E4E4E7] dark:border-[#262626] bg-white dark:bg-[#1C1C1C] hover:bg-[#F4F4F0] dark:hover:bg-[#262626] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] flex items-center gap-1.5 transition-colors active:scale-[0.98] whitespace-nowrap shrink-0"
+            className="h-9 px-3.5 rounded-xl border border-black/[0.08] dark:border-white/[0.1] bg-[#FFFFFF] dark:bg-[#191919] hover:bg-[#F4F4F0] dark:hover:bg-[#242424] text-xs font-medium text-[#18181B] dark:text-[#EDEDED] flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Copied!</span>
+                <Check className="w-3.5 h-3.5" />
+                <span>Copied</span>
               </>
             ) : (
               <>
                 <Copy className="w-3.5 h-3.5 text-[#71717A] dark:text-[#A1A1AA]" />
-                <span>Copy Text</span>
+                <span>Copy text</span>
               </>
             )}
           </button>
@@ -197,10 +193,10 @@ export function BroadcastNoticeModal({
           <button
             type="button"
             onClick={handleOpenWhatsApp}
-            className="h-9 px-3.5 sm:px-4 rounded-xl bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] hover:bg-black dark:hover:bg-white text-xs font-semibold flex items-center gap-1.5 transition-colors active:scale-[0.98] whitespace-nowrap shrink-0"
+            className="h-9 px-4 rounded-xl bg-[#18181B] dark:bg-[#EDEDED] text-white dark:text-[#121212] hover:bg-[#27272A] dark:hover:bg-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <MessageCircle className="w-3.5 h-3.5" />
-            <span>Share on WhatsApp</span>
+            <span>Open in WhatsApp</span>
           </button>
         </div>
       </div>
