@@ -2,9 +2,11 @@
 
 # dependencies
 /node_modules
-# local reviews, specs, design assets & scratch docs
-/inspo-designs
+# local docs & database scripts
+AGENTS.md
+/supabase/
 /anti-ai-slop.md
+/inspo-designs
 /phase.md
 /DESIGN.md
 CODE_REVIEW_AND_FIXES.md
